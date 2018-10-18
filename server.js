@@ -1,32 +1,36 @@
 const express = require('express');
-const path = require('path');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const passport = require('passport');
 
-const PORT = process.env.PORT || 3001;
+
+// Routes
+const users = require('./routes/api/users');
+const profile = require('./routes/api/profile');
+const posts = require('./routes/api/posts');
+
 const app = express();
-
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+// DB Config
+const db = require('./config/keys').mongoURI;
 
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static("client/build"));
-}
+mongoose
+.connect(db)
+.then(() => console.log('MongoDb Connected'))
+.catch(err => console.log(err));
 
-//routes
+// passport middleware
+app.use(passport.initialize());
 
+// Passport config
+require('./config/passport')(passport);
 
-const MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/dokkani";
-mongoose.Promise = Promise;
-mongoose.connect(MONGODB_URI, {useNewUrlParser: true});
+// user Routes
+app.use('/api/users', users);
+app.use('/api/profile', profile);
+app.use('/api/posts', posts);
 
-// Send every request to the React app
-// Define any API routes before this runs
-app.get("*", function(req, res) {
-    res.sendFile(path.join(__dirname, "./client/build/index.html"));
-});
+const PORT = process.env.PORT || 5000;
 
-app.listen(PORT, function() {
-console.log(`🌎 ==> Server now on port ${PORT}!`);
-});
-  
+app.listen(PORT, () => console.log('Server running on port ' + PORT));
