@@ -32,7 +32,7 @@ app.use('/api/profile', profile);
 app.use('/api/posts', posts);
 
 app.get('/', function(req, res) {
-    res.send('route hit');
+    res.send('hello world');
 });
 
 const PORT = process.env.PORT || 5000;
