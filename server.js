@@ -31,6 +31,10 @@ app.use('/api/users', users);
 app.use('/api/profile', profile);
 app.use('/api/posts', posts);
 
+app.get('/', function(req, res) {
+    res.send('route hit');
+});
+
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => console.log('Server running on port ' + PORT));
