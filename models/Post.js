@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
+
 // create schema
+
 const PostSchema = new Schema ({
      user : {
          type: Schema.Types.ObjectId,
@@ -11,8 +13,8 @@ const PostSchema = new Schema ({
          type : String,
          required: true
      },
-     name : {
-         type: String,
+     user_name : {
+         type: String
      },
      avatar: {
          type: String
@@ -35,6 +37,9 @@ const PostSchema = new Schema ({
                 type: String,
                 required: true
             },
+            user_name: {
+                type: String
+            },
             avatar: {
                 type: String
             },
@@ -44,7 +49,11 @@ const PostSchema = new Schema ({
             }
          }
          
-     ]
+     ],
+     date: {
+         type: Date,
+         default: Date.now
+     }
 });
 
 module.exports = Post = mongoose.model('post', PostSchema);
