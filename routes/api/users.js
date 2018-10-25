@@ -14,6 +14,12 @@ const validateLoginInput = require('../../validation/login');
 const User = require('../../models/Users');
 
 
+//test image upload 
+
+
+
+
+
 
 // @ Route Get api/users/register
 // @desc Register user
@@ -55,7 +61,9 @@ router.post('/signUp', (req, res) => {
                   if(err) throw err;
                   newUser.password = hash;
                   newUser.save()
-                    .then(user => res.json(user))
+                    .then(user => {
+                        res.json(user);
+                    })
                     .catch(err => console.log(err)); 
                 });
             });

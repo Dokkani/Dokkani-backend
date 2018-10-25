@@ -2,8 +2,9 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
-
-
+let btoa = require('btoa');
+let fs = require('fs');
+let multer = require('multer');
 //Post Model
 const Post = require('../../models/Post');
 //Profile Model
@@ -11,6 +12,40 @@ const Profile = require('../../models/Profile');
 
 // Validation
 const validatePostInput = require('../../validation/post');
+
+//multer configuration
+let storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'public/images/uploads');
+    },
+    filename: (req, file, cb) => {
+        cb(null, file.fieldname + '-' + Date.now());
+    }
+});
+let upload = multer({storage: storage});
+
+//image upload route
+router.post('/upload', upload.single('image'), (req, res, next) => {
+    console.log(req.file);
+    fs.readFile(req.file.path, (error, data) => {
+        if (error) throw error;
+        let b64Val = btoa(data);
+        console.log(b64Val);
+
+        const newPost = new Post({
+            text: 'somthing',
+            user_name: 'someone',
+            avatar: 'whatever',
+            user: 'cool person',
+            images: b64Val
+        });
+        newPost.save();
+    res.send('<img src=data:image/jpg;base64,' + b64Val + '>');
+    });
+})
+
+
+
 
 // @ Route GET api/posts
 // @desc Get Post
