@@ -11,8 +11,22 @@ const PostSchema = new Schema ({
      },
      images: [
          {
-             type: String,
-             required: true
+             filename: {
+                 type: String,
+                 required: true,
+             },
+             source: {
+                 type: String,
+                 required: true
+             },
+             mime_type: {
+                 type: String,
+                 required: true
+             },
+             original_name: {
+                 type: String,
+                 required: true
+             }
          }
      ],
      text: {

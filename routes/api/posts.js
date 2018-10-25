@@ -27,20 +27,33 @@ let upload = multer({storage: storage});
 //image upload route
 router.post('/upload', upload.single('image'), (req, res, next) => {
     console.log(req.file);
+    const acceptedFileTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
+    if (!acceptedFileTypes.includes(req.file.mimetype)) {
+        return res.sendStatus(404);
+    }
     fs.readFile(req.file.path, (error, data) => {
         if (error) throw error;
         let b64Val = btoa(data);
         console.log(b64Val);
-
-        const newPost = new Post({
-            text: 'somthing',
-            user_name: 'someone',
-            avatar: 'whatever',
-            user: 'cool person',
-            images: b64Val
+        Post.findByIdAndUpdate(req.body.id, 
+            {$push: 
+                {images: 
+                    {
+                        filename: req.file.filename, 
+                        source: b64Val, 
+                        mime_type: req.file.mimetype, 
+                        original_name: req.file.originalname
+                    }
+                }
+            }, 
+            (err, data) => {
+                if (err) {
+                    res.json(err);
+                    return res.sendStatus(500);
+                }
+                console.log(data);
+                res.send('<img src=data:image;base64,' + b64Val + '>');
         });
-        newPost.save();
-    res.send('<img src=data:image/jpg;base64,' + b64Val + '>');
     });
 })
 
