@@ -13,13 +13,21 @@ const Profile = require('../../models/Profile');
 // Validation
 const validatePostInput = require('../../validation/post');
 
+//get image type
+
+const getImageType = (string) => {
+    let array = string.split('/');
+    return array[1];
+}
+
+
 //multer configuration
 let storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, 'public/images/uploads');
     },
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now());
+        cb(null, file.fieldname + '-' + Date.now() + '.' + getImageType(file.mimetype));
     }
 });
 let upload = multer({storage: storage});
@@ -34,7 +42,7 @@ router.post('/upload', upload.single('image'), (req, res, next) => {
     fs.readFile(req.file.path, (error, data) => {
         if (error) throw error;
         let b64Val = btoa(data);
-        console.log(b64Val);
+        // console.log(b64Val);
         Post.findByIdAndUpdate(req.body.id, 
             {$push: 
                 {images: 
