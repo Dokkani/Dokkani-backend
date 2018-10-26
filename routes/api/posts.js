@@ -1,6 +1,6 @@
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
+
 const passport = require('passport');
 let btoa = require('btoa');
 let fs = require('fs');
