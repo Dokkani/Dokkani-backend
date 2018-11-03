@@ -27,6 +27,7 @@ const PostSchema = new Schema ({
             required: true
         }
      }],
+
      category : {
          type: String,
          required: true,
@@ -37,6 +38,7 @@ const PostSchema = new Schema ({
             }
         ]
      },
+
      title: {
         type: String,
         required: true

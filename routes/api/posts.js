@@ -87,7 +87,9 @@ router.post('/',upload.single('image'), passport.authenticate('jwt', { session :
                 mime_type: req.file.mimetype,
                 original_name: req.file.originalname
             },
+
             category : req.body.category,
+
             title: req.body.title,
             description: req.body.description,
             price : req.body.price,
@@ -206,10 +208,12 @@ router.post('/comment/:id', passport.authenticate('jwt', { session:false }),
     .catch(err => res.status(404).json({ postnotfound: 'No post found'}));
 });
 
+
 router.get('/category/:category', passport.authenticate('jwt', {session:false}), (req, res) => {
     Post.find({category: req.params.category})
     .then(post => res.json(post))
     .catch(err => res.status(404).json({ nopostfound : 'no posts found'}));
 });
+
 
 module.exports = router;
