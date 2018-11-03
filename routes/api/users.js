@@ -15,10 +15,10 @@ const User = require('../../models/Users');
 
 
 
-// @ Route Get api/users/register
+// @ Route Get api/users/signUp
 // @desc Register user
 // @access Public
-router.post('/signUp', (req, res) => {
+router.post('/signup', (req, res) => {
 
     const {errors, isValid } = validateRegisterInput(req.body);
 
@@ -30,7 +30,7 @@ router.post('/signUp', (req, res) => {
     User.findOne({ email : req.body.email })
     .then(user => {
         if(user) {
-            errors.email = "Email is already Exists";
+            errors.email = "Email already Exists";
             return res.status(400).json(errors);
         } else {
             const avatar = gravatar.url(req.body.email, {
