@@ -9,25 +9,10 @@ const PostSchema = new Schema ({
          type: Schema.Types.ObjectId,
          ref : 'users'
      },
-     images: [{
-        filename: {
-            type: String,
-            required: true,
-        },
-        source: {
-            type: String,
-            required: true
-        },
-        mime_type: {
-            type: String,
-            required: true
-        },
-        original_name: {
-            type: String,
-            required: true
-        }
-     }],
-
+     image: {
+        type: String,
+        required: true
+     },
      category : {
          type: String,
          required: true,
