@@ -61,42 +61,27 @@ let upload = multer({storage: storage});
 // @desc Create post
 // @access Private
 
-router.post('/',upload.single('image'), passport.authenticate('jwt', { session : false }), (req, res ) => {
-   console.log('hello');
-    console.log(req.file);
-    const acceptedFileTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
-    if (!acceptedFileTypes.includes(req.file.mimetype)) {
-        return res.sendStatus(404);
-    }
+router.post('/', passport.authenticate('jwt', { session : false }), (req, res ) => {
+//    console.log('hello');
+//     console.log(req.file);
 
     const { errors, isValid } = validatePostInput(req.body);
     // chaeck validation
     if(!isValid){
         return res.status(400).json(errors);
     }
-    console.log(req.file.path);
-    fs.readFile(req.file.path, (error, data) => {
-        if (error) throw error;
-        let b64Val = btoa(data);
-        // console.log(b64Val);
-
-        const newPost = new Post({
-            images: {
-                filename: req.file.filename,
-                source: b64Val,
-                mime_type: req.file.mimetype,
-                original_name: req.file.originalname
-            },
-            title: req.body.title,
-            description: req.body.description,
-            price : req.body.price,
-            user_name: req.body.user_name,
-            avatar: req.body.avatar,
-            user: req.user.id
-    });
-    newPost.save().then( post => res.json(post));
     
-});
+    const newPost = new Post({
+        image: req.body.image,
+        title: req.body.title,
+        description: req.body.description,
+        price : req.body.price,
+        user_name: req.body.user_name,
+        avatar: req.body.avatar,
+        user: req.user.id
+    });
+
+    newPost.save().then( post => res.json(post));
 });
 // @ Route Delete api/posts/:id
 // @desc Delete post
