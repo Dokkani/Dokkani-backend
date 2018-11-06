@@ -13,6 +13,17 @@ const PostSchema = new Schema ({
          type: String,
          required: true
      },
+
+     category : {
+         type: String,
+         required: true,
+        validate : [
+            function(input) {
+                const array = ['tools', 'electronics', 'household', 'clothes'];
+                return array.includes(input);
+            }
+        ]
+     },
      title: {
         type: String,
         required: true

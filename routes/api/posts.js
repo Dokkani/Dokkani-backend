@@ -80,8 +80,11 @@ router.post('/', passport.authenticate('jwt', { session : false }), (req, res ) 
         avatar: req.body.avatar,
         user: req.user.id
     });
-
-    newPost.save().then( post => res.json(post));
+   
+  });
+    newPost.save().then( post => res.json(post))
+    .catch(err => res.status(404).json({ postnotfound: 'no catogery found'}))
+    
 });
 // @ Route Delete api/posts/:id
 // @desc Delete post
@@ -188,5 +191,13 @@ router.post('/comment/:id', passport.authenticate('jwt', { session:false }),
     })
     .catch(err => res.status(404).json({ postnotfound: 'No post found'}));
 });
+
+
+router.get('/category/:category', passport.authenticate('jwt', {session:false}), (req, res) => {
+    Post.find({category: req.params.category})
+    .then(post => res.json(post))
+    .catch(err => res.status(404).json({ nopostfound : 'no posts found'}));
+});
+
 
 module.exports = router;
