@@ -36,23 +36,16 @@ router.get('/:id', (req, res) => {
 });
 
 
-//get image type
-
-const getImageType = (string) => {
-    let array = string.split('/');
-    return array[1];
-}
-
 //multer configuration
-let storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './uploads');
     },
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + '.' + getImageType(file.mimetype));
+        cb(null, new Date().toISOString() + file.originalname);
     }
 });
-let upload = multer({storage: storage});
+const upload = multer({storage: storage});
 
 
 
@@ -61,7 +54,7 @@ let upload = multer({storage: storage});
 // @desc Create post
 // @access Private
 
-router.post('/',upload.single('image'), passport.authenticate('jwt', { session : false }), (req, res ) => {
+router.post('/',upload.single('images'), passport.authenticate('jwt', { session : false }), (req, res ) => {
    console.log('hello');
     console.log(req.file);
     const acceptedFileTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
@@ -75,18 +68,14 @@ router.post('/',upload.single('image'), passport.authenticate('jwt', { session :
         return res.status(400).json(errors);
     }
     console.log(req.file.path);
-    fs.readFile(req.file.path, (error, data) => {
-        if (error) throw error;
-        let b64Val = btoa(data);
-        // console.log(b64Val);
+    // fs.readFile(req.file.path, (error, data) => {
+    //     if (error) throw error;
+    //     let b64Val = btoa(data);
+    //      console.log(b64Val);
 
         const newPost = new Post({
-            images: {
-                filename: req.file.filename,
-                source: b64Val,
-                mime_type: req.file.mimetype,
-                original_name: req.file.originalname
-            },
+            images: req.file.path,
+     
             category : req.body.category,
             title: req.body.title,
             description: req.body.description,
@@ -96,10 +85,10 @@ router.post('/',upload.single('image'), passport.authenticate('jwt', { session :
             user: req.user.id
     });
     newPost.save().then( post => res.json(post))
-    .catch(err => res.status(404).json({ postnotfound: 'no catogery found'}))
+    .catch(err => res.status(404).json({ postnotfound: 'no catogery found'}));
     
 });
-});
+
 // @ Route Delete api/posts/:id
 // @desc Delete post
 // @access Private
