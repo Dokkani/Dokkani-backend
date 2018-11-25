@@ -3,8 +3,8 @@ const router = express.Router();
 const mongoose = require('mongoose');
 const passport = require('passport');
 const multer = require('multer');
-const btoa = require('btoa');
-const fs = require('file-system');
+// const btoa = require('btoa');
+// const fs = require('file-system');
 
 
 //Post Model
