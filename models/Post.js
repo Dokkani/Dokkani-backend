@@ -9,15 +9,9 @@ const PostSchema = new Schema ({
          type: Schema.Types.ObjectId,
          ref : 'users'
      },
-<<<<<<< HEAD
      images: {
         type : String,
         required : true,
-=======
-     image: {
-        type: String,
-        required: true
->>>>>>> 1d938f2fdcb87b3ff6d4ce1d17ba8099f5fa2071
      },
      category : {
          type: String,
@@ -29,10 +23,6 @@ const PostSchema = new Schema ({
             }
         ]
      },
-<<<<<<< HEAD
-=======
-
->>>>>>> 1d938f2fdcb87b3ff6d4ce1d17ba8099f5fa2071
      title: {
         type: String,
         required: true
