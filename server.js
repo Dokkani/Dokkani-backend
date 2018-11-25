@@ -2,7 +2,10 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+<<<<<<< HEAD
 const morgan = require('morgan');
+=======
+>>>>>>> 1d938f2fdcb87b3ff6d4ce1d17ba8099f5fa2071
 const cors = require('cors');
 
 
@@ -13,8 +16,11 @@ const posts = require('./routes/api/posts');
 
 const app = express();
 app.use(cors());
+<<<<<<< HEAD
 app.use(morgan('dev'));
 app.use('/uploads',express.static('uploads'));
+=======
+>>>>>>> 1d938f2fdcb87b3ff6d4ce1d17ba8099f5fa2071
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // DB Config
