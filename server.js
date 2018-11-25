@@ -2,6 +2,7 @@ const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const passport = require('passport');
+const morgan = require('morgan');
 const cors = require('cors');
 
 
@@ -12,6 +13,8 @@ const posts = require('./routes/api/posts');
 
 const app = express();
 app.use(cors());
+app.use(morgan('dev'));
+app.use('/uploads',express.static('uploads'));
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 // DB Config

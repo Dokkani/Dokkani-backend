@@ -36,23 +36,16 @@ router.get('/:id', (req, res) => {
 });
 
 
-//get image type
-
-const getImageType = (string) => {
-    let array = string.split('/');
-    return array[1];
-}
-
 //multer configuration
-let storage = multer.diskStorage({
+const storage = multer.diskStorage({
     destination: (req, file, cb) => {
         cb(null, './uploads');
     },
     filename: (req, file, cb) => {
-        cb(null, file.fieldname + '-' + Date.now() + '.' + getImageType(file.mimetype));
+        cb(null, new Date().toISOString() + file.originalname);
     }
 });
-let upload = multer({storage: storage});
+const upload = multer({storage: storage});
 
 
 
@@ -61,27 +54,41 @@ let upload = multer({storage: storage});
 // @desc Create post
 // @access Private
 
-router.post('/', passport.authenticate('jwt', { session : false }), (req, res ) => {
+router.post('/',upload.single('images'), passport.authenticate('jwt', { session : false }), (req, res ) => {
+   console.log('hello');
+    console.log(req.file);
+    const acceptedFileTypes = ['image/jpg', 'image/jpeg', 'image/png', 'image/gif'];
+    if (!acceptedFileTypes.includes(req.file.mimetype)) {
+        return res.sendStatus(404);
+    }
+
     const { errors, isValid } = validatePostInput(req.body);
     // chaeck validation
     if(!isValid){
         return res.status(400).json(errors);
     }
-    const newPost = new Post({
-        image: req.body.image,
+    console.log(req.file.path);
+    // fs.readFile(req.file.path, (error, data) => {
+    //     if (error) throw error;
+    //     let b64Val = btoa(data);
+    //      console.log(b64Val);
 
-        category : req.body.category,
-
-        title: req.body.title,
-        description: req.body.description,
-        price : req.body.price,
-        user_name: req.body.user_name,
-        avatar: req.body.avatar,
-        user: req.user.id
+        const newPost = new Post({
+            images: req.file.path,
+     
+            category : req.body.category,
+            title: req.body.title,
+            description: req.body.description,
+            price : req.body.price,
+            user_name: req.body.user_name,
+            avatar: req.body.avatar,
+            user: req.user.id
     });
     newPost.save().then( post => res.json(post))
-    .catch(err => res.status(404).json({ postnotfound: 'no catogery found'}))
+    .catch(err => res.status(404).json({ postnotfound: 'no catogery found'}));
+    
 });
+
 // @ Route Delete api/posts/:id
 // @desc Delete post
 // @access Private
@@ -188,12 +195,10 @@ router.post('/comment/:id', passport.authenticate('jwt', { session:false }),
     .catch(err => res.status(404).json({ postnotfound: 'No post found'}));
 });
 
-
 router.get('/category/:category', passport.authenticate('jwt', {session:false}), (req, res) => {
     Post.find({category: req.params.category})
     .then(post => res.json(post))
     .catch(err => res.status(404).json({ nopostfound : 'no posts found'}));
 });
-
 
 module.exports = router;
